@@ -6,6 +6,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import styled from 'styled-components';
 import { prop } from 'ramda';
+import {
+  ScrollingProvider,
+  NavigationLink,
+  Section,
+} from './ScrollingProvider';
 
 const TopMenu = styled.ul`
   position: fixed;
@@ -15,35 +20,28 @@ const TopMenu = styled.ul`
   right: 0;
   top: 0;
   margin: 0;
+`;
 
-  & li {
-    float: left;
-  }
+const MenuLink = styled.span`
+  float: left;
+  display: block;
+  padding: 5px 25px 7px 25px;
+  width: 4em;
+  text-align: center;
+  -webkit-transition: 0.5s all ease-out;
+  -moz-transition: 0.5s all ease-out;
+  transition: 0.5s all ease-out;
+  border-top: 3px solid white;
+  text-decoration: none;
+  cursor: pointer;
+  color: ${props => (props.selected ? '#000' : '#aaa')};
 
-  & span {
-    display: block;
-    padding: 5px 25px 7px 25px;
-    width: 4em;
-    text-align: center;
-    -webkit-transition: 0.5s all ease-out;
-    -moz-transition: 0.5s all ease-out;
-    transition: 0.5s all ease-out;
-    border-top: 3px solid white;
-    color: #aaa;
-    text-decoration: none;
-  }
-
-  & span:hover {
+  &:hover {
     color: #000;
-  }
-
-  & li.active a {
-    border-top: 3px solid #333;
-    color: #333;
   }
 `;
 
-const Section = styled.div`
+const SectionContainer = styled.div`
   height: 100vh;
   background: ${prop('background')};
   display: flex;
@@ -80,27 +78,37 @@ class MyComponent extends React.Component {
 
   render() {
     return (
-      <div>
+      <ScrollingProvider scrollBehavior="smooth">
         <TopMenu>
-          <li className="active" onClick={this.onClick('myRef')}>
-            <span>Top</span>
-          </li>
-          <li onClick={this.onClick('myRef2')}>
-            <span>Foo</span>
-          </li>
-          <li onClick={this.onClick('myRef3')}>
-            <span>Bar</span>
-          </li>
-          <li onClick={this.onClick('myRef4')}>
-            <span>Baz</span>
-          </li>
+          <NavigationLink section="top">
+            {link => (
+              <MenuLink onClick={link.onClick} selected={link.isSelected}>
+                Top
+              </MenuLink>
+            )}
+          </NavigationLink>
+
+          <NavigationLink section="foo">
+            {link => (
+              <MenuLink onClick={link.onClick} selected={link.isSelected}>
+                Foo
+              </MenuLink>
+            )}
+          </NavigationLink>
+          {/* <NavigationLink section="foo">Foo</NavigationLink> */}
+          {/* <NavigationLink section="bar">Bar</NavigationLink>
+          <NavigationLink section="baz">Baz</NavigationLink> */}
         </TopMenu>
 
-        <Section id="top" ref={this.myRef} background="lightblue">
-          top
+        <Section id="top">
+          <SectionContainer background="lightblue">top</SectionContainer>
         </Section>
 
-        <Section id="foo" ref={this.myRef2} background="orange">
+        <Section id="foo">
+          <SectionContainer background="orange">foo</SectionContainer>
+        </Section>
+
+        {/* <Section id="foo" ref={this.myRef2} background="orange">
           foo
         </Section>
 
@@ -110,8 +118,8 @@ class MyComponent extends React.Component {
 
         <Section id="baz" ref={this.myRef4} background="cyan">
           baz
-        </Section>
-      </div>
+        </Section> */}
+      </ScrollingProvider>
     );
   }
 }
