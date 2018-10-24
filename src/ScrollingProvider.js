@@ -12,6 +12,7 @@ export class ScrollingProvider extends React.Component {
 
   componentDidMount() {
     document.addEventListener('scroll', this.debounceScroll, true);
+    this.handleScroll();
   }
 
   componentWillUnmount() {
@@ -19,25 +20,26 @@ export class ScrollingProvider extends React.Component {
   }
 
   handleScroll = () => {
-    const heightPosition =
-      window.pageYOffset || document.documentElement.scrollTop;
-    const selected = Object.entries(this.refs).reduce((acc, [key, value]) => {
-      const node = ReactDOM.findDOMNode(value.current);
-      const { top, height } = node.getBoundingClientRect();
+    const selected = Object.entries(this.refs).reduce(
+      (acc, [key, value]) => {
+        const node = ReactDOM.findDOMNode(value.current);
+        const { top } = node.getBoundingClientRect();
+        const differenceFromTop = Math.abs(top);
 
-      debugger;
+        return differenceFromTop < acc.differenceFromTop
+          ? {
+              differenceFromTop,
+              key,
+            }
+          : acc;
+      },
+      {
+        differenceFromTop: 9999,
+        key: '',
+      },
+    );
 
-      // const { offsetTop, offsetHeight } = value.current;
-      // debugger;
-      // const minHeight = offsetTop;
-      // const maxHeight = offsetTop + offsetHeight;
-      // if (heightPosition >= minHeight && heightPosition <= maxHeight)
-      //   return key;
-      // return acc;
-      return acc;
-    });
-
-    console.log('scrolling ...', selected);
+    this.setState({ selected: selected.key });
   };
 
   debounceScroll = debounce(this.handleScroll, 100);
@@ -61,6 +63,7 @@ export class ScrollingProvider extends React.Component {
     const value = {
       registerRef: this.registerRef,
       scrollTo: this.scrollTo,
+      selected: this.state.selected,
     };
     return <Provider value={value}>{this.props.children}</Provider>;
   }

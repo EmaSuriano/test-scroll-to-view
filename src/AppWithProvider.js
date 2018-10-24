@@ -52,28 +52,14 @@ const SectionContainer = styled.div`
 `;
 
 class MyComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.myRef = React.createRef();
-    this.myRef2 = React.createRef();
-    this.myRef3 = React.createRef();
-    this.myRef4 = React.createRef();
-  }
-
   onClick = section => () => {
     const myDomNode = ReactDOM.findDOMNode(this[section].current);
     console.log(section, myDomNode.offsetTop);
-    // myDomNode.scrollIntoView();
-    // this[section].current.scrollIntoView({
-    //   behavior: 'smooth',
-    //   block: 'start',
-    // });
 
     window.scrollTo({
       top: myDomNode.offsetTop,
       behavior: 'smooth',
     });
-    // window.scrollTo(0, myDomNode.offsetTop);
   };
 
   render() {
@@ -95,9 +81,6 @@ class MyComponent extends React.Component {
               </MenuLink>
             )}
           </NavigationLink>
-          {/* <NavigationLink section="foo">Foo</NavigationLink> */}
-          {/* <NavigationLink section="bar">Bar</NavigationLink>
-          <NavigationLink section="baz">Baz</NavigationLink> */}
         </TopMenu>
 
         <Section id="top">
@@ -107,18 +90,6 @@ class MyComponent extends React.Component {
         <Section id="foo">
           <SectionContainer background="orange">foo</SectionContainer>
         </Section>
-
-        {/* <Section id="foo" ref={this.myRef2} background="orange">
-          foo
-        </Section>
-
-        <Section id="bar" ref={this.myRef3} background="pink">
-          bar
-        </Section>
-
-        <Section id="baz" ref={this.myRef4} background="cyan">
-          baz
-        </Section> */}
       </ScrollingProvider>
     );
   }
